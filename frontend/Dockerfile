@@ -50,19 +50,17 @@ ENV SF_AGENTS_URL=http://sf-agents:8100
 # ── Security hardening & Permissions for Talos ──────────────────────────────
 RUN apk --no-cache del apk-tools 2>/dev/null || true
 
-# 1. Create all necessary directories
+# 1. Create necessary directories
 RUN mkdir -p /var/cache/nginx /var/run /var/log/nginx /etc/nginx/conf.d
 
-# 2. Fix Nginx main config to use a writable PID path and remove root user directive
+# 2. Fix Nginx main config: remove root user and move PID to a writable location
 RUN sed -i '/user  nginx;/d' /etc/nginx/nginx.conf && \
     sed -i 's|/var/run/nginx.pid|/tmp/nginx.pid|g' /etc/nginx/nginx.conf
 
 # 3. Comprehensive ownership fix for UID 1000
-# We include /etc/nginx/conf.d so the entrypoint can write the processed template there
 RUN chown -R 1000:1000 /var/cache/nginx /var/run /var/log/nginx /etc/nginx/conf.d /etc/nginx/templates /usr/share/nginx/html /tmp
 
-# 4. Ensure the entrypoint script can actually write the config file
+# 4. Set permissions for config writing
 RUN chmod -R 775 /etc/nginx/conf.d
 
-# Required by Talos / Kubernetes PSS
 USER 1000:1000
