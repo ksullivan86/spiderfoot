@@ -7,7 +7,7 @@ nameOverride: ""
 fullnameOverride: ""
 
 image:
-  repository: sghcr.io/ksullivan86/spiderfoot
+  repository: ghcr.io/ksullivan86/spiderfoot
   tag: "6.0.0"
   pullPolicy: IfNotPresent
 
