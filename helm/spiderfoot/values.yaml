@@ -7,7 +7,7 @@ nameOverride: ""
 fullnameOverride: ""
 
 image:
-  repository: spiderfoot/spiderfoot
+  repository: sghcr.io/ksullivan86/spiderfoot
   tag: "6.0.0"
   pullPolicy: IfNotPresent
 
@@ -40,7 +40,7 @@ webui:
   replicaCount: 1
   port: 80
   image:
-    repository: spiderfoot/spiderfoot-frontend
+    repository: ghcr.io/ksullivan86/spiderfoot-frontend
     tag: ""  # defaults to .Values.image.tag if empty
   service:
     type: ClusterIP
