@@ -14,9 +14,9 @@ keywords:
   - microservices
 maintainers:
   - name: Van1sh 
-home: https://github.com/poppopjmp/spiderfoot
+home: https://github.com/ksullivan86/spiderfoot
 sources:
-  - https://github.com/poppopjmp/spiderfoot
+  - https://github.com/ksullivan86/spiderfoot
 dependencies:
   - name: postgresql
     version: "~15.x"

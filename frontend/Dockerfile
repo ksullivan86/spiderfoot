@@ -51,21 +51,16 @@ ENV SF_AGENTS_URL=http://sf-agents:8100
 # Remove apk and other package managers to prevent in-container installs
 RUN apk --no-cache del apk-tools 2>/dev/null || true
 
-# Create non-root nginx user directories and fix ownership
+# Fix Nginx main config to run without root
+RUN sed -i '/user  nginx;/d' /etc/nginx/nginx.conf && \
+    sed -i 's|/var/run/nginx.pid|/var/cache/nginx/nginx.pid|g' /etc/nginx/nginx.conf
+
+# Grant permissions specifically to UID 1000 (instead of "nginx")
 RUN mkdir -p /var/cache/nginx /var/run /var/log/nginx && \
-    chown -R nginx:nginx /var/cache/nginx /var/run /var/log/nginx && \
-    chown -R nginx:nginx /usr/share/nginx/html && \
-    chown -R nginx:nginx /etc/nginx/conf.d && \
-    chown -R nginx:nginx /etc/nginx/templates
+    chown -R 1000:1000 /var/cache/nginx /var/run /var/log/nginx && \
+    chown -R 1000:1000 /usr/share/nginx/html && \
+    chown -R 1000:1000 /etc/nginx/conf.d && \
+    chown -R 1000:1000 /etc/nginx/templates
 
-# NOTE: We intentionally do NOT set USER nginx here.
-# The nginx Docker entrypoint must run as root to do envsubst template
-# processing. Nginx itself drops worker processes to the nginx user via
-# the `user nginx;` directive in nginx.conf.
-# With read_only: true + tmpfs mounts, running USER nginx breaks envsubst.
-
-EXPOSE 80
-
-# Nginx (PID 1) — template processing happens automatically via
-# nginx docker image's entrypoint (20-envsubst-on-templates.sh)
-CMD ["nginx", "-g", "daemon off;"]
+# Force execution as UID 1000 to satisfy Talos
+USER 1000:1000
