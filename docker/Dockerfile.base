@@ -89,6 +89,6 @@ RUN apt-get purge -y --auto-remove apt 2>/dev/null || true && \
 # Remove unnecessary network utilities (curl kept for healthchecks)
 RUN rm -f /usr/bin/wget /usr/bin/nc /usr/bin/ncat 2>/dev/null || true
 
-USER spiderfoot
+USER 1000:1000
 
 ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]

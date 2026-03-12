@@ -20,6 +20,9 @@ ENV SF_SERVICE_ROLE=scanner \
 HEALTHCHECK --interval=30s --timeout=10s --start-period=20s --retries=3 \
     CMD python -m celery -A spiderfoot.celery_app:celery_app inspect ping --timeout 5 || exit 1
 
+# Required by Talos / Kubernetes PSS
+USER 1000:1000
+
 CMD ["python", "-m", "celery", \
      "-A", "spiderfoot.celery_app:celery_app", \
      "worker", \
